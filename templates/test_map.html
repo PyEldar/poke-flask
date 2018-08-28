@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://code.jquery.com/jquery-1.4.2.min.js"></script>
+    <script>
+        jQuery(window).ready(function(){
+          jQuery("#findLocationBtn").click(initiate_geolocation);
+        });
+        
+        function initiate_geolocation() {
+            navigator.geolocation.getCurrentPosition(handle_geolocation_query,handle_errors);
+        }
+        function handle_errors(error)
+        {
+            switch(error.code)
+            {
+                case error.PERMISSION_DENIED: alert("user did not share geolocation data");
+                break;
+                case error.POSITION_UNAVAILABLE: alert("could not detect current position");
+                break;
+                case error.TIMEOUT: alert("retrieving position timed out");
+                break;
+                default: alert("unknown error");
+                break;
+            }
+        }
+        function handle_geolocation_query(position)
+        {
+            var google_tile = "http://maps.google.com/maps/api/staticmap?sensor=false&center=" + position.coords.latitude + "," +
+                            position.coords.longitude + "&zoom=14&size=300x400&markers=color:blue|label:U|" +
+                            position.coords.latitude + ',' + position.coords.longitude;
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");   
+            var imageObj = new Image();
+            imageObj.src = google_tile;
+            
+            imageObj.onload = function(){
+              context.drawImage(imageObj, 0, 0);
+            }
+        }
+    </script>
+  </head>
+  <body>
+      <div>
+        <button id="findLocationBtn" >Draw My Location on Google Map</button>
+      </div>
+        <canvas id="myCanvas" width="300px" height="400px" style="border:1px solid grey;">
+        </canvas>
+  </body>
+</html>

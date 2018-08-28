@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Friend codes{% endblock%}
+{% block head %}{% endblock %}
+{% block content %}
+
+    <div id="trainer-divs" class="container text-light" style="min-height: 100vh;">
+        {% for error in errors %}
+            <div class="row error_message">
+                <div class="col-sm-6 offset-sm-3 alert alert-danger">
+                    {{ error }}
+                </div>
+            </div>
+        {% endfor %}
+        <br><br><br>
+        <div class="row">
+            <div class="col-sm-6 offset-sm-3">
+                <form action="" method="POST">
+                    <div class="form-group row">
+                        <label for="name_input" class="col-2 col-form-label">Trainer Name</label>
+                        <div class="col-10">
+                            <input name="name" type="text" class="form-control" id="name_input" placeholder="Trainer Name" value="{{ initial.name }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="code_input" class="col-2 col-form-label">Trainer Code</label>
+                        <div class="col-10">
+                            <input name="code" type="text" class="form-control" id="code_input" placeholder="Trainer Code" value="{{ initial.code }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="location_input" class="col-2 col-form-label">Your location</label>
+                        <div class="col-10">
+                            <input name="location" type="text" class="form-control" id="location_input" placeholder="Location (e.g. city)" value="{{ initial.location }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-5">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                        <div class="col-5">
+                            <button id="show_all" type="button" class="btn btn-warning">Show hidden codes</button>
+                        </div>
+                    </div>
+                </form>
+                <br>
+                <br>
+            </div>
+        </div>
+        {% for trainer in trainers %}
+            <div id="{{ trainer.code }}" class="row code_row">
+                <div class="col-sm-8 offset-sm-2 alert alert-info">
+                    <div class="row">
+                        <div class="col-sm-1">
+                            <img src="">
+                        </div>
+                        <div class="col-sm-2">
+                            {{ trainer.name }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ trainer.code }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ trainer.location }}
+                        </div>
+                        <div class="col-sm-3">
+                            {{ trainer.when.ctime() }}
+                        </div>
+                        <div class="col-sm-2">
+                            <button row_id="{{ trainer.code }}" type="button" class="hide_btn btn btn-danger">Hide</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if loop.last %}
+                <div id="last" mongo_id="{{ trainer._id }}" style="display: none;"></div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div class="container text-light">
+        <div class="row">
+            <div class="col-sm-2 offset-sm-5">
+                <div id="loader" style="display: none"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2 offset-sm-5 center">
+                <button id="load_codes" type="button" class="btn btn-info" style="margin: 0 auto">Load more</button>
+            </div>
+        </div>
+        <div class="row" style="height: 300px;">
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %} 
+    <style>
+
+        #loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #3498db;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 2s linear infinite; /* Safari */
+                animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+        }
+
+        #header_bg {
+            background-image: url("{{ url_for('static', filename='imgs/wallpaper2.jpg') }}");
+            height: 100vh;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #header_bg_2 {
+            height: 40vh;
+            background-color: #474e5d;
+            color: #ffffff;
+            padding-top: 70px;
+            padding-bottom: 70px"
+        }
+    </style>
+
+    <script>
+    $(document).ready(function(){
+        setTimeout(function() {
+          jQuery('.error_message_timeout').hide();
+        }, 3500);
+      });
+
+    $(document).ready(function(){
+        setTimeout(function() {
+            hidden_codes = JSON.parse(localStorage.getItem("hidden_codes"))
+            if(Array.isArray(hidden_codes)){
+                code_rows_ids = $.map($(".code_row"), function(n, i){return n.id;});
+                del_rows_id = common(hidden_codes, code_rows_ids)
+                for(i=0; i<del_rows_id.length; i++){
+                    $("[id='" +del_rows_id[i] + "']").hide(300)
+                }
+            }
+        }, 500);
+    });
+
+    $(document).on('click', ".hide_btn", function() {
+        hide_row_id = this.getAttribute("row_id")
+        hidden_codes = JSON.parse(localStorage.getItem("hidden_codes"))
+        if(!Array.isArray(hidden_codes)){
+            hidden_codes = []
+        }
+        if(!(hidden_codes.indexOf(hide_row_id) > -1)){
+            hidden_codes.push(hide_row_id)
+        }        
+        $("[id='" + hide_row_id + "']").hide(300)
+        localStorage.setItem("hidden_codes", JSON.stringify(hidden_codes))
+
+    });
+
+    $("#show_all").click(function(){
+        localStorage.setItem("hidden_codes", null)
+        $(".code_row").show(300)
+    })
+
+    function common(arr1, arr2) {
+        var newArr = [];
+        newArr = arr1.filter(function(v){ return arr2.indexOf(v) >= 0;})
+        newArr.concat(arr2.filter(function(v){ return newArr.indexOf(v) >= 0;}));
+
+        return newArr;
+    }
+    </script>
+
+    
+    <script>
+    $(document).ready(function() {
+        var win = $(window);
+        var block = false;
+
+        win.scroll(function() {
+            if(!block){
+                if (win.scrollTop() + win.height() > $(document).height() - 100) {  
+                    //$('#loader').show();
+                    last_id = $("#last").attr("mongo_id")
+        
+                    block = true;
+                    setTimeout(function(){
+                        $.ajax({
+                            method: "POST",
+                            url: '/get_trainers',
+                            contentType: "application/json",
+                            dataType: 'html',
+                            data: JSON.stringify({"mongo_id": last_id}),
+                            success: function(html) {
+                                $("#last").remove()
+                                $('#trainer-divs').append(html);
+                                //$('#loader').hide(); 
+                                setTimeout(function(){
+                                    $(".code_row_added").show(300)
+                                    $(".code_row_added").removeClass("code_row_added")
+                                    hidden_codes = JSON.parse(localStorage.getItem("hidden_codes"))
+                                    if(Array.isArray(hidden_codes)){
+                                        code_rows_ids = $.map($(".code_row"), function(n, i){return n.id;});
+                                        del_rows_id = common(hidden_codes, code_rows_ids)
+                                        for(i=0; i<del_rows_id.length; i++){
+                                            $("[id='" +del_rows_id[i] + "']").hide(300)
+                                        }
+                                    }
+                                    block = false
+                                    }, 200)
+                            }
+                        });
+                    }, 1)
+                }
+            }
+        });
+
+        $("#load_codes").click(function() {
+            if(!block){
+                //$('#loader').show();
+                last_id = $("#last").attr("mongo_id")
+
+                block = true;
+                setTimeout(function(){
+                    $.ajax({
+                        method: "POST",
+                        url: '/get_trainers',
+                        contentType: "application/json",
+                        dataType: 'html',
+                        data: JSON.stringify({"mongo_id": last_id}),
+                        success: function(html) {
+                            $("#last").remove()
+                            $('#trainer-divs').append(html);
+                            //$('#loader').hide(); 
+                            setTimeout(function(){
+                                $(".code_row_added").show(300)
+                                $(".code_row_added").removeClass("code_row_added")
+                                hidden_codes = JSON.parse(localStorage.getItem("hidden_codes"))
+                                if(Array.isArray(hidden_codes)){
+                                    code_rows_ids = $.map($(".code_row"), function(n, i){return n.id;});
+                                    del_rows_id = common(hidden_codes, code_rows_ids)
+                                    for(i=0; i<del_rows_id.length; i++){
+                                        $("[id='" +del_rows_id[i] + "']").hide(300)
+                                    }
+                                }
+                                block = false
+                            }, 200)
+                        }
+                    });
+                }, 1)
+
+            }
+        })
+    });
+    </script>
+
+{% endblock %}

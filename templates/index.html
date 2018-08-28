@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}
+Poke Trades
+{% endblock %}
+
+{% block nav %}   
+    <!--
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='imgs/logo.jpg') }}" width="30" height="30" class="d-inline-block" alt="" style="vertical-align: middle;">
+                GO Trade
+            </a>
+            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#nav-main-index" aria-controls="nav-main-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        
+            <div class="navbar-collapse collapse" id="nav-main-index">
+                <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary" role="button" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li style="width: 20px;">
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary" role="button" href="{{ url_for('friend_codes') }}" >Friends</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="https://example.com" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown04">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+                </ul>
+            </div>
+        </div>       
+    </nav>
+    --> 
+{% endblock %}
+
+{% block head %}
+    <div id="header_bg" class="container-fluid">
+        <div class="row" style="padding-top: 13%; padding-bottom: 4.5%;">
+            
+                <div class="col-sm-2 offset-sm-3 align-self-center top_bot_margin">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Trading</h5>
+                            <p class="card-text">Looking for someone to trade with? Let´s see who is nearby and wants trade too!</p>
+                            <a href="#trainer-divs" class="btn btn-primary">Go to Trading</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 align-self-center top_bot_margin">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Friend Codes</h5>
+                            <p class="card-text">Do you wanna add new friends to exchange presents?</p>
+                            <a href="{{ url_for('friend_codes') }}" class="btn btn-primary">Let´s see Friend Codes</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-2 align-self-center top_bot_margin">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Trading</h5>
+                            <p class="card-text">Looking for someone to trade with? Let´s see who is nearby and wants trade too!</p>
+                            <a href="#trainer-divs" class="btn btn-primary">Go to Trading</a>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+        <div class="row text-light text-center" style="margin-bottom: 20px;">
+            <div class="col-sm-6 offset-sm-3">
+                <h1>What´s Nearby</h1>
+                <hr>
+                <h3>Let´s see if there are any players who want to trade and make use of friendship level bonus</h3>
+                <br>
+                <a href="" class="btn btn-danger btn-lg" role="button">Show Me</a>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %} 
+    <style>       
+        body{
+            background: none;
+            background-color: black;
+        }
+
+        #header_bg {
+            background-image: url("{{ url_for('static', filename='imgs/wallpaper2.jpg') }}");
+            height: 100vh;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #header_bg_2 {
+            height: 40vh;
+            background-color: #474e5d;
+            color: #ffffff;
+            padding-top: 70px;
+            padding-bottom: 70px"
+        }
+        .top_bot_margin{
+            margin-top: 20px;
+        }
+
+        #nav-main-index ul li a{
+            color: white;
+        }
+    </style>
+
+    <script>
+    $(document).ready(function(){
+        setTimeout(function() {
+          jQuery('.error_message_timeout').hide();
+        }, 3500);
+      });
+    </script>
+
+{% endblock %}

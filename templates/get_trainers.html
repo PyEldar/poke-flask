@@ -1,0 +1,26 @@
+{% for trainer in trainers %}
+    <div id="{{ trainer.code }}" class="row code_row code_row_added" style="display: none;">
+        <div class="col-sm-8 offset-sm-2 alert alert-info">
+            <div class="row">
+                <div class="col-2">
+                    <img src="">
+                </div>
+                <div class="col-2">
+                    {{ trainer.name }}
+                </div>
+                <div class="col-3">
+                    {{ trainer.code }}
+                </div>
+                <div class="col-3">
+                    {{ trainer.when.ctime() }}
+                </div>
+                <div class="col-2">
+                    <button row_id="{{ trainer.code }}" type="button" class="hide_btn btn btn-danger">Hide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if loop.last %}
+        <div id="last" mongo_id="{{ trainer._id }}" style="display: none;"></div>
+    {% endif %}
+{% endfor %}

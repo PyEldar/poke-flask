@@ -31,26 +31,17 @@ def friend_codes():
 	elif request.method == "GET":
 		return render_template("friend_codes.html", trainers=get_trainers(limit=20), errors=[], initial={"name": "", "code": "", "location": ""})
 
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
 	return render_template("index.html")
 
-
 @app.route("/get_trainers", methods=["GET", "POST"])
 def load_trainers():
+	"""used for AJAX loading of codes"""
 	html = ""
 	mongo_id = request.get_json().get("mongo_id")
-	trainers = get_trainers_belowid(id=mongo_id, limit=25)	
+	trainers = get_trainers_belowid(id=mongo_id, limit=25)
 	return render_template("get_trainers.html", trainers=trainers)
-	
-@app.route("/test_map", methods=["GET", "POST"])
-def test_map():
-	return render_template("test_map.html")
-
-@app.route("/test_game", methods=["GET", "POST"])
-def test_game():
-	return render_template("test_game.html")
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=80, debug=True)

@@ -1,3 +1,5 @@
+"""Searches online forum for trainer codes and stores them in MongoDB"""
+
 from urllib.request import urlopen
 from datetime import datetime
 import re
@@ -15,7 +17,6 @@ for x in range(8, 92):
     messages = soup.find_all("blockquote", class_="messageText SelectQuoteContainer ugc baseHtml")
     message = ",".join([Member.get_text() for Member in messages])
     codes += re.findall(r"\d\d\d\d \d\d\d\d \d\d\d\d", message) + re.findall(r"\d\d\d\d\d\d\d\d\d\d\d\d", message)
-
 
 db = pymongo.MongoClient().pokeflask
 for code in codes:
